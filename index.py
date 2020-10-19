@@ -1,11 +1,15 @@
 import os
 import discord
-
+import random
 from utils import default
 from utils.data import Bot, HelpFormat
-
+jokes = []
 config = default.get("config.json")
+with open('jokes.txt') as f:
+    jokes = f.readlines()
+
 print("Logging in...")
+
 
 bot = Bot(
     command_prefix=config.prefix, prefix=config.prefix,
@@ -15,7 +19,11 @@ bot = Bot(
         guilds=True, members=True, messages=True, reactions=True
     )
 )
-
+@bot.event
+async def on_message(message):
+	if message.content == '!joke':
+		await message.channel.send(random.choice(jokes))
+        
 for file in os.listdir("cogs"):
     if file.endswith(".py"):
         name = file[:-3]
